@@ -15,6 +15,8 @@ public class GUI {
     JMenu menuEdit;
     JMenu menuFormat;
     JMenu menuColour;
+    JMenuItem New, Open, Save, SaveAs, Exit;
+//    JMenuItem
 
 
     //constructor
@@ -22,6 +24,7 @@ public class GUI {
         createWindow();
         createTextArea();
         createMenuBar();
+        FileMenu();
         window.setVisible(true);
 
         //createTextArea(); does not work here, text area needs to be defined first
@@ -59,6 +62,23 @@ public class GUI {
 
         menuColour = new JMenu("Colour");
         menuBar.add(menuColour);
+    }
+
+    public void FileMenu(){
+        New = new JMenuItem("New");
+        menuFile.add(New);
+
+        Open = new JMenuItem("Open");
+        menuFile.add(Open);
+
+        Save = new JMenuItem("Save");
+        menuFile.add(Save);
+
+        SaveAs = new JMenuItem("SaveAs");
+        menuFile.add(SaveAs);
+
+        Exit = new JMenuItem("Exit");
+        menuFile.add(Exit);
     }
 
 }
