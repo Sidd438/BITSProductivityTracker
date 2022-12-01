@@ -1,6 +1,6 @@
 package BITSProductivityTracker;
 
-public interface Addday {
+interface Addday {
     public void addMon();
     public void addTue();
     public void addWed();
@@ -75,7 +75,7 @@ public class Course implements Addday {
 }
 
 
-public class Note {
+class Note {
     private String title;
     private String text;
     private Course course;
