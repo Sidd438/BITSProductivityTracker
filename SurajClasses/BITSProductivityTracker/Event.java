@@ -2,7 +2,7 @@ package tracker.SurajClasses.BITSProductivityTracker;
 
 import java.time.LocalTime;
 import BITSProductivityTracker.Course;
-public class Event {
+abstract public class Event {
     private LocalTime starttime;
     private LocalTime endtime;
     private Course course;

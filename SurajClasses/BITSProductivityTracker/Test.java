@@ -1,14 +1,13 @@
 package tracker.SurajClasses.BITSProductivityTracker;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import BITSProductivityTracker.Student;
 
-public class Test extends Event {
+abstract public class Test extends Event {
     private String syllabus;
     private int marks;
     private int score;
 
-    private LocalDate date;
+    public LocalDate date;
 
 
     public Test(LocalTime starttime, LocalTime endtime, String syllabus, int marks, int score, BITSProductivityTracker.Course course, String day, LocalDate date) {

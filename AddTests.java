@@ -92,7 +92,13 @@ public class AddTests {
         f = new JFrame();
         f.setLayout(new FlowLayout());
         ArrayList<Course> courses = new ArrayList<>();
-        courses.add((new Course("OOPS", 200)));
+        Object[] subject = Subjects.grade.keySet().toArray();
+        Object[] units = Subjects.subjects.values().toArray();
+        for(int i=0;i< subject.length;i++){
+            courses.add(new Course(subject[i].toString(),Integer.parseInt(units[i].toString())*100));
+        }
+        System.out.println(courses);
+        //courses.add((new Course("OOPS", 200)));
         ArrayList<String> cour = new ArrayList<>();
         for(Course course: courses){
             cour.add(course.name);
@@ -193,7 +199,7 @@ public class AddTests {
                         }
                     });
                     thread.start();
-                    
+
 					//JOptionPane.showMessageDialog(null,"Username: "+s1+" Password: "+s2);
 				}catch(Exception ex) {
                     System.out.println(ex.toString());
@@ -227,7 +233,64 @@ public class AddTests {
         f.add(sp);
         f.setSize(400, 400);
         f.setVisible(true);
+        Thread thread2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true){
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    for(Assignment assignment: assignments){
+                        if(isDateInCurrentWeek(assignment.date)){
+                            int hour = assignment.getStarttime().getHour();
+                            int hourend = assignment.getEndtime().getHour();
+                            String day = assignment.day;
+                            int ja = cac.get(day);
+                            for(int k = hour; k<hourend; k++){
+                                j.getModel().setValueAt(("Assignment : " + assignment.getCourse().getName() + " "+hour+"-"+hourend),k-8,ja);
+                            }
+                        }
+                    }
+                    for(Compre compre: compres){
+                        if(isDateInCurrentWeek(compre.date)){
+                            int hour = compre.getStarttime().getHour();
+                            int hourend = compre.getEndtime().getHour();
+                            String day = compre.day;
+                            int ja = cac.get(day);
+                            for(int k = hour; k<hourend; k++){
+                                j.getModel().setValueAt(("Compre : " + compre.getCourse().getName() + " "+hour+"-"+hourend),k-8,ja);
+                            }
+                        }
+                    }
+                    for(Midsem midsem: midsems){
+                        if(isDateInCurrentWeek(midsem.date)){
+                            int hour = midsem.getStarttime().getHour();
+                            int hourend = midsem.getEndtime().getHour();
+                            String day = midsem.day;
+                            int ja = cac.get(day);
+                            for(int k = hour; k<hourend; k++){
+                                j.getModel().setValueAt(("Midsem : " + midsem.getCourse().getName() + " "+hour+"-"+hourend),k-8,ja);
+                            }
+                        }
+                    }
+                    for(Quiz quiz: quizzes){
+                        if(isDateInCurrentWeek(quiz.date)){
+                            int hour = quiz.getStarttime().getHour();
+                            int hourend = quiz.getEndtime().getHour();
+                            String day = quiz.day;
+                            int ja = cac.get(day);
+                            for(int k = hour; k<hourend; k++){
+                                j.getModel().setValueAt(("Quiz : " + quiz.getCourse().getName() + " "+hour+"-"+hourend),k-8,ja);
+                            }
+                        }
+                    }
+                }
+        
+    }});
 
+        thread2.start();
     }
 
     public static boolean isDateInCurrentWeek(LocalDate localDate) {

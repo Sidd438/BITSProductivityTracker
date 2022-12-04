@@ -1,16 +1,11 @@
 package tracker.SurajClasses.BITSProductivityTracker;
 import java.time.LocalDate;
-import BITSProductivityTracker.Student;
 
 
 public class ProductiveHours {
-    private Student student;
     private int productiveHours;
     private LocalDate date = LocalDate.now();
 
-    public ProductiveHours(Student student) {
-        this.student = student;
-    }
 
     public int getProductiveHours() {
         return productiveHours;
