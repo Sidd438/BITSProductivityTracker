@@ -17,6 +17,7 @@ import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
@@ -24,6 +25,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import javax.swing.JPasswordField;
 
@@ -39,6 +42,11 @@ public class AddTests {
     private JTextField textField;
     private JTextField syllabus;
     JSpinner start, end, marks;
+
+    static ArrayList<Assignment> assignments = new ArrayList<>();
+    static ArrayList<Midsem> midsems = new ArrayList<>();
+    static ArrayList<Compre> compres = new ArrayList<>();
+    static ArrayList<Quiz> quizzes = new ArrayList<>();
 
 
 
@@ -61,6 +69,27 @@ public class AddTests {
     }
 
     private void initialize() {
+        String[][] data = {
+                { "8 - 9", "", "","", "", "", "", "" }, // 0
+                { "9 - 10", "", "","", "", "", "", "" }, // 1
+                { "10 - 11", "", "","", "", "", "", "" }, // 2
+                { "11 - 12", "", "","", "", "", "", "" }, // 3
+                { "12 - 1", "", "","", "", "", "", "" }, // 4
+                { "1 - 2", "", "","", "", "", "", "" }, // 5
+                { "2 - 3", "", "","", "", "", "", "" }, // 6
+                { "3 - 4", "", "","", "", "", "", "" }, // 7
+                { "4 - 5", "", "","", "", "", "", "" }, // 8
+                { "5 - 6", "", "","", "", "", "", "" }, // 9
+        };
+        String[] columnNames = { "Timings" , "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+        HashMap<String, Integer> cac = new HashMap<>();
+        cac.put("MONDAY", 1);
+        cac.put("TUESDAY", 2);
+        cac.put("WEDNESDAY", 3);
+        cac.put("THURSDAY", 4);
+        cac.put("FRIDAY", 5);
+        cac.put("SATURDAY", 6);
+        cac.put("SUNDAY", 7);
         f = new JFrame();
         f.setLayout(new FlowLayout());
         ArrayList<Course> courses = new ArrayList<>();
@@ -70,8 +99,6 @@ public class AddTests {
             cour.add(course.name);
         }
         String[] types = {"Assignment", "Compre", "Midsem", "Quiz"};
-
-        String[] columnNames = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
         type = new JComboBox(types);
         day = new JComboBox(columnNames);
         course = new JComboBox(cour.toArray());
@@ -93,7 +120,6 @@ public class AddTests {
         btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					String s1=day.getSelectedItem().toString();
 					@SuppressWarnings("deprecation")
 					String s2=course.getSelectedItem().toString();
                     Course cur = new Course("No Course", 000);
@@ -104,22 +130,61 @@ public class AddTests {
                     }
                     int s3 = Integer.parseInt(start.getValue().toString());
                     int s4 = Integer.parseInt(end.getValue().toString());
-                    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                     LocalDate date = LocalDate.parse(textField.getText(), dateFormat);
+                    String s1 = String.valueOf(date.getDayOfWeek());
                     int s5 = Integer.parseInt(marks.getValue().toString());
                     String s6 = syllabus.getText();
+                    boolean check = isDateInCurrentWeek(date);
                     if(type.getSelectedItem().toString().equals("Assignment")){
                         Assignment lecture = new Assignment( LocalTime.of(s3, 0), LocalTime.of(s4, 0), s6, s5, 0, cur, s1, date);
-                        System.out.println(lecture);
+                        assignments.add(lecture);
+                        if(check){
+                            int hour = lecture.getStarttime().getHour();
+                            int hourend = lecture.getEndtime().getHour();
+                            String day = lecture.day;
+                            System.out.println(day);
+                            int ja = cac.get(day);
+                            for(int k = hour; k<hourend; k++){
+                                j.getModel().setValueAt(("Assignment : " + lecture.getCourse().getName() + " "+hour+"-"+hourend),k-8,ja);
+                            }
+                        }
                     }else if(type.getSelectedItem().toString().equals("Compre")){
                         Compre lecture = new Compre( LocalTime.of(s3, 0), LocalTime.of(s4, 0), s6, s5, 0, cur, s1, date);
-                        System.out.println(lecture);
+                        compres.add(lecture);
+                        if(check){
+                            int hour = lecture.getStarttime().getHour();
+                            int hourend = lecture.getEndtime().getHour();
+                            String day = lecture.day;
+                            int ja = cac.get(day);
+                            for(int k = hour; k<hourend; k++){
+                                j.getModel().setValueAt(("Compre : " + lecture.getCourse().getName() + " "+hour+"-"+hourend),k-8,ja);
+                            }
+                        }
                     }else if(type.getSelectedItem().toString().equals("Midsem")){
                         Midsem lecture = new Midsem( LocalTime.of(s3, 0), LocalTime.of(s4, 0), s6, s5, 0, cur, s1, date);
-                        System.out.println(lecture);
+                        midsems.add(lecture);
+                        if(check){
+                            int hour = lecture.getStarttime().getHour();
+                            int hourend = lecture.getEndtime().getHour();
+                            String day = lecture.day;
+                            int ja = cac.get(day);
+                            for(int k = hour; k<hourend; k++){
+                                j.getModel().setValueAt(("Midsem : " + lecture.getCourse().getName() + " "+hour+"-"+hourend),k-8,ja);
+                            }
+                        }
                     }else if(type.getSelectedItem().toString().equals("Quiz")){
                         Quiz lecture = new Quiz( LocalTime.of(s3, 0), LocalTime.of(s4, 0), s6, s5, 0, cur, s1, date);
-                        System.out.println(lecture);
+                        quizzes.add(lecture);
+                        if(check){
+                            int hour = lecture.getStarttime().getHour();
+                            int hourend = lecture.getEndtime().getHour();
+                            String day = lecture.day;
+                            int ja = cac.get(day);
+                            for(int k = hour; k<hourend; k++){
+                                j.getModel().setValueAt(("Quiz : " + lecture.getCourse().getName() + " "+hour+"-"+hourend),k-8,ja);
+                            }
+                        }
                     }
 					//JOptionPane.showMessageDialog(null,"Username: "+s1+" Password: "+s2);
 				}catch(Exception ex) {
@@ -130,8 +195,8 @@ public class AddTests {
 		});
         f.add(l0);
         f.add(type);
-        f.add(l1);
-        f.add(day);
+//        f.add(l1);
+//        f.add(day);
         f.add(l2);
         f.add(course);
         f.add(l3);
@@ -145,8 +210,27 @@ public class AddTests {
         f.add(j3);
         f.add(syllabus);
         f.add(btnNewButton);
+        j = new JTable(data, columnNames);
+        j.setBounds(30, 40, 4000, 1000);
+        j.setRowHeight(78);
+        // adding it to JScrollPane
+//        j.getColumnModel().getColumn(0).setPreferredWidth(3);
+        JScrollPane sp = new JScrollPane(j);
+        f.add(sp);
         f.setSize(400, 400);
         f.setVisible(true);
 
     }
+
+    public static boolean isDateInCurrentWeek(LocalDate localDate) {
+    Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+  Calendar currentCalendar = Calendar.getInstance();
+  int week = currentCalendar.get(Calendar.WEEK_OF_YEAR);
+  int year = currentCalendar.get(Calendar.YEAR);
+  Calendar targetCalendar = Calendar.getInstance();
+  targetCalendar.setTime(date);
+  int targetWeek = targetCalendar.get(Calendar.WEEK_OF_YEAR);
+  int targetYear = targetCalendar.get(Calendar.YEAR);
+  return week == targetWeek && year == targetYear;
+}
 }
