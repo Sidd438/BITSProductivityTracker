@@ -35,7 +35,7 @@ public class SignUp extends JFrame {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			}
+            }
 		});
 	}
 

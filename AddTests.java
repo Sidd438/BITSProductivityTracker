@@ -30,7 +30,6 @@ import java.util.Date;
 import java.util.HashMap;
 import javax.swing.JPasswordField;
 
-
 public class AddTests {
     JFrame f;
     // Table
@@ -136,9 +135,14 @@ public class AddTests {
                     int s5 = Integer.parseInt(marks.getValue().toString());
                     String s6 = syllabus.getText();
                     boolean check = isDateInCurrentWeek(date);
-                    if(type.getSelectedItem().toString().equals("Assignment")){
-                        Assignment lecture = new Assignment( LocalTime.of(s3, 0), LocalTime.of(s4, 0), s6, s5, 0, cur, s1, date);
+                    Course finalCur = cur;
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(type.getSelectedItem().toString().equals("Assignment")){
+                        Assignment lecture = new Assignment( LocalTime.of(s3, 0), LocalTime.of(s4, 0), s6, s5, 0, finalCur, s1, date);
                         assignments.add(lecture);
+                        System.out.println(check);
                         if(check){
                             int hour = lecture.getStarttime().getHour();
                             int hourend = lecture.getEndtime().getHour();
@@ -150,7 +154,7 @@ public class AddTests {
                             }
                         }
                     }else if(type.getSelectedItem().toString().equals("Compre")){
-                        Compre lecture = new Compre( LocalTime.of(s3, 0), LocalTime.of(s4, 0), s6, s5, 0, cur, s1, date);
+                        Compre lecture = new Compre( LocalTime.of(s3, 0), LocalTime.of(s4, 0), s6, s5, 0, finalCur, s1, date);
                         compres.add(lecture);
                         if(check){
                             int hour = lecture.getStarttime().getHour();
@@ -162,7 +166,7 @@ public class AddTests {
                             }
                         }
                     }else if(type.getSelectedItem().toString().equals("Midsem")){
-                        Midsem lecture = new Midsem( LocalTime.of(s3, 0), LocalTime.of(s4, 0), s6, s5, 0, cur, s1, date);
+                        Midsem lecture = new Midsem( LocalTime.of(s3, 0), LocalTime.of(s4, 0), s6, s5, 0, finalCur, s1, date);
                         midsems.add(lecture);
                         if(check){
                             int hour = lecture.getStarttime().getHour();
@@ -174,7 +178,7 @@ public class AddTests {
                             }
                         }
                     }else if(type.getSelectedItem().toString().equals("Quiz")){
-                        Quiz lecture = new Quiz( LocalTime.of(s3, 0), LocalTime.of(s4, 0), s6, s5, 0, cur, s1, date);
+                        Quiz lecture = new Quiz( LocalTime.of(s3, 0), LocalTime.of(s4, 0), s6, s5, 0, finalCur, s1, date);
                         quizzes.add(lecture);
                         if(check){
                             int hour = lecture.getStarttime().getHour();
@@ -186,6 +190,10 @@ public class AddTests {
                             }
                         }
                     }
+                        }
+                    });
+                    thread.start();
+                    
 					//JOptionPane.showMessageDialog(null,"Username: "+s1+" Password: "+s2);
 				}catch(Exception ex) {
                     System.out.println(ex.toString());
@@ -233,4 +241,33 @@ public class AddTests {
   int targetYear = targetCalendar.get(Calendar.YEAR);
   return week == targetWeek && year == targetYear;
 }
+}
+
+
+class CheckWeekThread implements Runnable{
+
+    private final LocalDate date;
+    private boolean check = false;
+
+    CheckWeekThread(LocalDate date){
+        this.date = date;
+    }
+
+    @Override
+    public void run() {
+        LocalDate localDate = this.date;
+        Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Calendar currentCalendar = Calendar.getInstance();
+        int week = currentCalendar.get(Calendar.WEEK_OF_YEAR);
+        int year = currentCalendar.get(Calendar.YEAR);
+        Calendar targetCalendar = Calendar.getInstance();
+        targetCalendar.setTime(date);
+        int targetWeek = targetCalendar.get(Calendar.WEEK_OF_YEAR);
+        int targetYear = targetCalendar.get(Calendar.YEAR);
+        check = week == targetWeek && year == targetYear;
+    }
+
+    public boolean isCheck() {
+        return check;
+    }
 }
